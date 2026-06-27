@@ -1,25 +1,26 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { io } from 'socket.io-client';
-
+import { io, Socket } from 'socket.io-client';
 
 @Injectable({
     providedIn: 'root',
 })
 export class ChatService {
-    socket = io('http://localhost:3000');
+    private socket: Socket = io('http://localhost:3000'); // conectamos con el servidor
 
-    // Escuchar eventos del servidor con un observable
-    listen(eventName: string): Observable<any> {
+    listen(eventName: string): Observable<any[]> {
         return new Observable((subscriber) => {
-            this.socket.on(eventName, (data) => {
-                subscriber.next(data);
-            });
+            const handler = (...args: any[]) => subscriber.next(args);
+            this.socket.on(eventName, handler);
+
+            // cuando nadie escuche más, quitamos el listener específico
+            return () => {
+                this.socket.off(eventName, handler);
+            };
         });
     }
 
-    // Enviar eventos al servidor
-    emit(eventName: string, data: any, target: string) {
-        this.socket.emit(eventName, data);
+    emit(eventName: string, data?: any, target?: any) {
+        this.socket.emit(eventName, data, target);
     }
 }

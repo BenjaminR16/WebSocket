@@ -9,7 +9,7 @@ const server = createServer(app); // creamos el servidor que escucha la puerta
 const io = new Server(server, {
     cors: {
         // Aquí pones la URL de tu frontend en Vercel (sin la barra / al final)
-        origin: "http://127.0.0.1:5500",
+        origin: "http://localhost:4200",
         methods: ["GET", "POST"], // Los métodos permitidos
     },
 }); // creamos el lugar donde viven los mensajes en vivo

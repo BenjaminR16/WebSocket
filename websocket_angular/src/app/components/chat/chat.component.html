@@ -1,11 +1,10 @@
-<div id="header"> <!-- esta es la parte de arriba donde está el ID propio -->
-    <div id="status"> <!-- aquí mostramos el estado y el selector -->
-        <div>Mi ID: <strong id="myId">...</strong></div> <!-- aquí aparecerá tu id -->
-        <label for="target">Chat con:</label> <!-- etiqueta para decir con quién chateas -->
-        <select [formControl]="selectControl">
+<div id="header">
+    <div id="status">
+        <div>Mi ID: <strong id="myId">{{ myId() }}</strong></div>
+        <label for="target">Chat con:</label>
+        <select id="target" [formControl]="selectControl" (focus)="pedirUsuarios()">
             <option value="">Selecciona un usuario</option>
-
-            @for (item of usuarios; track item.id) {
+            @for (item of usuarios(); track item.id) {
             <option [value]="item.id">
                 {{ item.nombre }}
             </option>
@@ -13,10 +12,14 @@
         </select>
     </div>
 </div>
-<ul id="messages"><!-- aquí van los mensajes que llegan -->
 
+<ul id="messages">
+    @for (msg of mensajes(); track $index) {
+    <li>{{ msg }}</li>
+    }
 </ul>
-<form id="form" [formGroup]="formulario" (submit)="enviar()"> <!-- este es el formulario para escribir mensajes -->
+
+<form id="form" [formGroup]="formulario" (ngSubmit)="enviar()">
     <input id="input" formControlName="chat" autocomplete="off" placeholder="Escribe un mensaje..." />
     <button class="login-submit" type="submit">Enviar</button>
 </form>
